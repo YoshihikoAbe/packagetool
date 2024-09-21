@@ -2,8 +2,16 @@ package packagetool
 
 import (
 	"bufio"
+	"errors"
 	"io"
 )
+
+var errMagic = errors.New("invalid magic")
+
+type File struct {
+	io.Reader
+	Filename string
+}
 
 type PackageReader interface {
 	Name() string
