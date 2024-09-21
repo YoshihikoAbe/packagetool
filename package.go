@@ -29,7 +29,7 @@ func DetectArchiveType(rd *bufio.Reader) (PackageReader, error) {
 	case "QAR":
 		pr = QarReader{}
 	case "MAS":
-		pr = MarReader{}
+		pr = &MarReader{}
 	default:
 		pr = BarReader{}
 	}

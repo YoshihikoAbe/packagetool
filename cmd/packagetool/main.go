@@ -15,13 +15,15 @@ import (
 )
 
 var (
-	out  string
-	list bool
+	out     string
+	list    bool
+	decrypt bool
 )
 
 func main() {
 	flag.StringVar(&out, "o", "./", "Path to the ouput directory")
 	flag.BoolVar(&list, "l", false, "List archive contents")
+	flag.BoolVar(&decrypt, "d", false, "Enable MAR decryption")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS] FILENAME\nList of available options:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -45,6 +47,9 @@ func main() {
 		fatal("failed to determine archive type:", err)
 	}
 	fmt.Println("archive type:", pr.Name())
+	if mar, ok := pr.(*packagetool.MarReader); ok {
+		mar.UseDecryption = decrypt
+	}
 
 	callback := dumpArchive
 	if list {
