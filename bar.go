@@ -6,7 +6,13 @@ import (
 	"io"
 )
 
-func ReadBar(rd io.Reader, fn func(File) error) error {
+type BarReader struct{}
+
+func (BarReader) Name() string {
+	return "BAR"
+}
+
+func (BarReader) Read(rd io.Reader, cb func(File) error) error {
 	b := make([]byte, 256)
 
 	// read header
@@ -35,7 +41,7 @@ func ReadBar(rd io.Reader, fn func(File) error) error {
 		}
 		size := binary.LittleEndian.Uint64(b[4:])
 
-		if err := fn(File{
+		if err := cb(File{
 			Reader:   io.LimitReader(rd, int64(size)),
 			Filename: name,
 		}); err != nil {

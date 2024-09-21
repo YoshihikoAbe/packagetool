@@ -6,7 +6,13 @@ import (
 	"io"
 )
 
-func ReadQar(rd io.Reader, fn func(File) error) error {
+type QarReader struct{}
+
+func (QarReader) Name() string {
+	return "QAR"
+}
+
+func (QarReader) Read(rd io.Reader, cb func(File) error) error {
 	b := make([]byte, 144)
 
 	// read header
@@ -25,7 +31,7 @@ func ReadQar(rd io.Reader, fn func(File) error) error {
 		}
 		size := int64(binary.LittleEndian.Uint64(b[136:]))
 
-		if err := fn(File{
+		if err := cb(File{
 			Reader:   io.LimitReader(rd, size),
 			Filename: string(bytes.TrimRight(b[:128], "\x00")),
 		}); err != nil {

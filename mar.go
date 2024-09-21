@@ -7,7 +7,13 @@ import (
 	"io"
 )
 
-func ReadMar(rd io.Reader, fn func(File) error) error {
+type MarReader struct{}
+
+func (MarReader) Name() string {
+	return "MAR"
+}
+
+func (MarReader) Read(rd io.Reader, cb func(File) error) error {
 	b := make([]byte, 128)
 
 	// read magic
@@ -42,7 +48,7 @@ func ReadMar(rd io.Reader, fn func(File) error) error {
 			}
 			size := binary.LittleEndian.Uint32(b)
 
-			if err := fn(File{
+			if err := cb(File{
 				Reader:   io.LimitReader(rd, int64(size)),
 				Filename: filename,
 			}); err != nil {

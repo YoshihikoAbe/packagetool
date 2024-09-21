@@ -40,10 +40,11 @@ func main() {
 	defer f.Close()
 	rd := bufio.NewReader(f)
 
-	pr, err := detectArchiveType(rd)
+	pr, err := packagetool.DetectArchiveType(rd)
 	if err != nil {
 		fatal("failed to determine archive type:", err)
 	}
+	fmt.Println("archive type:", pr.Name())
 
 	callback := dumpArchive
 	if list {
@@ -51,32 +52,10 @@ func main() {
 	}
 
 	start := time.Now()
-	if err := pr(rd, callback); err != nil {
+	if err := pr.Read(rd, callback); err != nil {
 		fatal(err)
 	}
 	fmt.Println("time elapsed:", time.Now().Sub(start))
-}
-
-func detectArchiveType(rd *bufio.Reader) (packagetool.Reader, error) {
-	magic, err := rd.Peek(3)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Print("detected format: ")
-	var pr packagetool.Reader
-	switch string(magic) {
-	case "QAR":
-		fmt.Println("QAR")
-		pr = packagetool.ReadQar
-	case "MAS":
-		fmt.Println("MAR")
-		pr = packagetool.ReadMar
-	default:
-		fmt.Println("BAR")
-		pr = packagetool.ReadBar
-	}
-	return pr, nil
 }
 
 func listArchive(f packagetool.File) error {
