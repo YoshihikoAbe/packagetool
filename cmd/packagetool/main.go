@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-	flag.StringVar(&out, "o", "./", "Path to the ouput directory")
+	flag.StringVar(&out, "o", "./", "Path to the output directory")
 	flag.BoolVar(&list, "l", false, "List archive contents")
 	flag.BoolVar(&decrypt, "d", false, "Enable MAR decryption")
 	flag.Usage = func() {
