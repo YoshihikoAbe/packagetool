@@ -13,9 +13,18 @@ type File struct {
 	Filename string
 }
 
+func (f *File) Skip() {
+	io.Copy(io.Discard, f)
+}
+
+type Reader interface {
+	io.Reader
+	io.ByteReader
+}
+
 type PackageReader interface {
 	Name() string
-	Read(rd io.Reader, cb func(File) error) error
+	Read(rd Reader, cb func(File) error) error
 }
 
 func DetectArchiveType(rd *bufio.Reader) (PackageReader, error) {

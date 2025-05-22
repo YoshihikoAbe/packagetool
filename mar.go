@@ -17,7 +17,7 @@ func (MarReader) Name() string {
 	return "MAR"
 }
 
-func (mar MarReader) Read(rd io.Reader, cb func(File) error) error {
+func (mar MarReader) Read(rd Reader, cb func(File) error) error {
 	b := make([]byte, 128)
 
 	// read magic
@@ -28,7 +28,7 @@ func (mar MarReader) Read(rd io.Reader, cb func(File) error) error {
 	}
 
 	for {
-		t, err := rd.(io.ByteReader).ReadByte()
+		t, err := rd.ReadByte()
 		if err != nil {
 			return err
 		}
@@ -39,7 +39,7 @@ func (mar MarReader) Read(rd io.Reader, cb func(File) error) error {
 		}
 
 		// read filename
-		size, err := readNullTerminated(b, rd.(io.ByteReader))
+		size, err := readNullTerminated(b, rd)
 		if err != nil {
 			return err
 		}

@@ -12,7 +12,7 @@ func (BarReader) Name() string {
 	return "BAR"
 }
 
-func (BarReader) Read(rd io.Reader, cb func(File) error) error {
+func (BarReader) Read(rd Reader, cb func(File) error) error {
 	b := make([]byte, 256)
 
 	// read header

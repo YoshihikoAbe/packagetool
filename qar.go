@@ -12,7 +12,7 @@ func (QarReader) Name() string {
 	return "QAR"
 }
 
-func (QarReader) Read(rd io.Reader, cb func(File) error) error {
+func (QarReader) Read(rd Reader, cb func(File) error) error {
 	b := make([]byte, 144)
 
 	// read header
